@@ -1,5 +1,14 @@
+import static org.glassfish.jersey.client.ClientProperties.PROXY_PASSWORD;
+
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.telegram.telegrambots.ApiContext;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -8,25 +17,26 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 
 public class Bot extends TelegramLongPollingBot {
-
   private static final String help = "Command list:\n\\help -- shows command list\n\\repeat -- repeat last question\n\\result -- shows your score\n\\quit -- finishes our dialog";
+  private static String botName ="";
+  private static String token= "";
 
-  public static void main(String[] args) {
-    ApiContextInitializer.init();
-    TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-    try {
-      telegramBotsApi.registerBot(new Bot());
-    } catch (TelegramApiRequestException e) {
-      e.printStackTrace();
-    }
+  public Bot(String botName, String token, DefaultBotOptions options) {
+    super(options);
+    this.botName = botName;
+    this.token = token;
   }
-
+  public Bot(String botName, String token) {
+    this.botName = botName;
+    this.token = token;
+  }
 
   public void onUpdateReceived(Update update) {
     Message message = update.getMessage();
@@ -44,7 +54,6 @@ public class Bot extends TelegramLongPollingBot {
       sendMsg(chatId, "я тебя не понимать");
     }
   }
-
 
   public synchronized void sendMsg(String chatId, String s) {
     SendMessage sendMessage = new SendMessage();
@@ -87,10 +96,10 @@ public class Bot extends TelegramLongPollingBot {
   }
 
   public String getBotUsername() {
-    return "JavaChatBot";
+    return botName;
   }
 
   public String getBotToken() {
-    return "746379722:AAFrKO3i2-xsRrGyXWXTp7pEH2s9WLqKM-s";
+    return token;
   }
 }
