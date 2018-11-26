@@ -1,16 +1,5 @@
-import static org.glassfish.jersey.client.ClientProperties.PROXY_PASSWORD;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.telegram.telegrambots.ApiContext;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -20,19 +9,20 @@ import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 
 public class Bot extends TelegramLongPollingBot {
+
   private static final String help = "Command list:\n\\help -- shows command list\n\\repeat -- repeat last question\n\\result -- shows your score\n\\quit -- finishes our dialog";
-  private static String botName ="";
-  private static String token= "";
+  private static String botName;
+  private static String token;
 
   public Bot(String botName, String token, DefaultBotOptions options) {
     super(options);
     this.botName = botName;
     this.token = token;
   }
+
   public Bot(String botName, String token) {
     this.botName = botName;
     this.token = token;
