@@ -40,7 +40,10 @@ public class Bot extends TelegramLongPollingBot {
     if ("/help".equals(s)) {
       sendMsg(chatId, help);
 
-    } else {
+    } if ("/start".equals(s)) {
+      sendMsg(chatId,"Hello, dear user! What is your name?");
+
+    }else {
       sendMsg(chatId, "я тебя не понимать");
     }
   }
@@ -50,6 +53,7 @@ public class Bot extends TelegramLongPollingBot {
     sendMessage.enableMarkdown(true);
     sendMessage.setChatId(chatId);
     sendMessage.setText(s);
+    setButtons(sendMessage);
     try {
       execute(sendMessage);
     } catch (TelegramApiException e) {
@@ -71,12 +75,12 @@ public class Bot extends TelegramLongPollingBot {
     // Первая строчка клавиатуры
     KeyboardRow keyboardFirstRow = new KeyboardRow();
     // Добавляем кнопки в первую строчку клавиатуры
-    keyboardFirstRow.add(new KeyboardButton("Привет"));
+    keyboardFirstRow.add(new KeyboardButton("/help"));
 
     // Вторая строчка клавиатуры
     KeyboardRow keyboardSecondRow = new KeyboardRow();
     // Добавляем кнопки во вторую строчку клавиатуры
-    keyboardSecondRow.add(new KeyboardButton("Помощь"));
+    keyboardSecondRow.add(new KeyboardButton("/startQuiz"));
 
     // Добавляем все строчки клавиатуры в список
     keyboard.add(keyboardFirstRow);
