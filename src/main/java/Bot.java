@@ -13,9 +13,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot {
 
-  private static final String help = "Command list:\n\\help -- shows command list\n\\repeat -- repeat last question\n\\result -- shows your score\n\\quit -- finishes our dialog";
+  private static final String help = "Command list:\n/help -- shows command list\n/startQuiz -- starts quiz\n/startwiki -- finds on Wikipedia";
   private static String botName;
   private static String token;
+  private static int status = 0;
 
   public Bot(String botName, String token, DefaultBotOptions options) {
     super(options);
@@ -37,14 +38,27 @@ public class Bot extends TelegramLongPollingBot {
 
   private void handle(String chatId, Message input) {
     String s = input.getText().toLowerCase();
-    if ("/help".equals(s)) {
-      sendMsg(chatId, help);
-
-    } if ("/start".equals(s)) {
-      sendMsg(chatId,"Hello, dear user! What is your name?");
-
-    }else {
-      sendMsg(chatId, "я тебя не понимать");
+    if (status == 1){
+      String w = WikiApi.getWikiInformation(s);
+      sendMsg(chatId, w);
+      sendMsg(chatId, "If you want to find something, you need to repeat a command /startWiki");
+      status = 0;
+      return;
+    }
+    switch (s) {
+      case "/help":
+        sendMsg(chatId, help);
+        break;
+      case "/startquiz":
+        status = 2;
+        sendMsg(chatId, "Hello, dear user! What is your name?");
+        break;
+      case "/startwiki":
+        status = 1;
+        sendMsg(chatId, "What do you want to find on Wikipedia?");
+        break;
+      default:
+        sendMsg(chatId, "Я тебя не понимаю. Попробуй команду /help");
     }
   }
 
@@ -82,9 +96,15 @@ public class Bot extends TelegramLongPollingBot {
     // Добавляем кнопки во вторую строчку клавиатуры
     keyboardSecondRow.add(new KeyboardButton("/startQuiz"));
 
+    // Третья строчка клавиатуры
+    KeyboardRow keyboardThirdRow = new KeyboardRow();
+    // Добавляем кнопки во вторую строчку клавиатуры
+    keyboardThirdRow.add(new KeyboardButton("/startWiki"));
+
     // Добавляем все строчки клавиатуры в список
     keyboard.add(keyboardFirstRow);
     keyboard.add(keyboardSecondRow);
+    keyboard.add(keyboardThirdRow);
     // и устанваливаем этот список нашей клавиатуре
     replyKeyboardMarkup.setKeyboard(keyboard);
   }
